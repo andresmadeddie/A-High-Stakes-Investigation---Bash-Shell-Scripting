@@ -35,9 +35,17 @@ grep -f $correlation/times $correlation/dealers > $correlation/correlation
 
 awk '{print $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15}' $correlation/players | sed s'/,/ /'g | sed s'/  / /'g > $correlation/p
 
-for x in $(cat $correlation/p | wc -w); do echo $x && awk '{print $x, $(($x+1))}' $correlation/p; done
+array=( $(head -1 $correlation/p) ) 
 
-for x in $(cat $correlation/p | wc -w); do echo $x && awk '{print $(($x+1))}' $correlation/p; done
+
+for player in ${array[@]}; do grep $player correlation/p | echo $player $(wc); done
+
+for player in ${array[@]}; do echo $player $player[2]; done
+
+for x in $(head -1 $correlation/p | wc -w); do echo ${array[x]}; done
+until [ $i -eq  $(head -1 $correlation/p | wc -w) ]; do ((i-i+1)) &&  echo ${array[$i]}; done
+
+for x in {1..12}; do grep  ${array[$i]} $correlation/p; done
 
 
 
