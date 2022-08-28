@@ -1,6 +1,6 @@
 # Dealer Finder interactive script
 
-Script: [Dealer Finder by Time and Game](/Scripts/Dealer%20Finder%20by%20Time%20and%20Game.sh)
+Script: [Dealer Finder by Time and Game](/Scripts/dealer_%20finder_by_time_and_game.sh)
 
 ## The Narrative behind the project
 

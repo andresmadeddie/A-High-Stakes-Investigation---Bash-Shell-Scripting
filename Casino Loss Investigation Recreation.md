@@ -1,5 +1,5 @@
 # Casino Loss Investigation Recreation
- Script: [A High Stakes Investigation](/Scripts/A%20High%20Stakes%20Investigation.sh)
+ Script: [A High Stakes Investigation](/Scripts/a_high_stakes_investigation.sh)
 
  Output File: [Conclusion](/Resources/conclusion)
 

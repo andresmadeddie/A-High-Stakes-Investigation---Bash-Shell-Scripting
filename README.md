@@ -29,7 +29,7 @@ There are two scenarios:
 | grep | wget | unzip | sed |
 | tee | cat | head | arrays |
 | wc | nano | touch | mkdir |
-Built-In variables | Command Expansions | Brace Expansions |
+| Built-In variables | Command Expansions | Brace Expansions | read |
 
 
 
