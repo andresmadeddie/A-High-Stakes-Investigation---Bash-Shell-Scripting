@@ -1,7 +1,7 @@
 # Casino Loss Investigation Recreation
- Script: [A High Stakes Investigation](/A%20High%20Stakes%20Investigation.sh)
+ Script: [A High Stakes Investigation](/Scripts/A%20High%20Stakes%20Investigation.sh)
 
- Output File: [Conclusion](/conclusion)
+ Output File: [Conclusion](/Resources/conclusion)
 
 ---
 >Note: This script recreate the sceneraio of teh investigation. the script will automatically download the ZIP files from the resource directory of this repository. Use the `rm -r ~/Lucky_Duck_Investigation` command to remove all data created by this script.
