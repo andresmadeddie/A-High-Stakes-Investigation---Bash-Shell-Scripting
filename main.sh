@@ -5,13 +5,21 @@ root=~/Lucky_Duck_Investigations
 roulette=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation
 dealerAnalysis=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Dealer_Analysis
 playerAnalysis=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Analysis
-correlation=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation
+pdCorrelation=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation
+losses=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/losses
+dealers=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/dealers
+times=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/times
+players=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/players
+suspectDealer=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/suspectDealer
+suspectPlayer=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/suspectPlayer
+conclusion=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/conclusion
 
 # 1 #
 # File Structure
 if [ ! -d $HOME/Lucky_Duck_Investigations/ ];
 then
-    mkdir $root $roulette $dealerAnalysis $playerAnalysis $correlation 
+    mkdir $root $roulette $dealerAnalysis $playerAnalysis $pdCorrelation
+    touch $losses $players $dealers $times $suspectDealer $suspectPlayer
     cd $root
     wget "https://tinyurl.com/3-HW-setup-evidence" && chmod +x ./3-HW-setup-evidence && ./3-HW-setup-evidence && rm 3-HW-setup-evidence 
 fi
@@ -22,67 +30,29 @@ find $root/Dealer_Schedules_0310 -type f \( -iname '*0310*' -o -iname '*0312*' -
 # Move players files (days 10, 12, 15) from the given folder to 'Player_Analysis folder'
 find $root/Roulette_Player_WinLoss_0310 -type f \( -iname '*0310*' -o -iname '*0312*' -o -iname '*0315*' \) -exec mv -t $playerAnalysis {} +
 
+# 3 #
 # Extract the date, time, first and last name of the roulette dealers
-grep : $dealerAnalysis/* | awk -F"/" '{print $7}' | sed 's/_Dealer_schedule//' | awk '{print $1, $2, $5, $6}' > $correlation/dealers
+grep : $dealerAnalysis/* | awk -F"/" '{print $7}' | sed 's/_Dealer_schedule//' | awk '{print $1, $2, $5, $6}' > $dealers
 # Extract the date, time and players when the losses occurred
-grep - $playerAnalysis/* | awk -F"/" '{print $7}' | sed 's/_win_loss_player_data//' > $correlation/players
+grep - $playerAnalysis/* | awk -F"/" '{print $7}' | sed 's/_win_loss_player_data//' > $losses
+lossesHours=$(grep - $playerAnalysis/* | wc -l)
 
-# take times of looses and match with dealers working during those hours
-awk '{print $1, $2}' $correlation/players > $correlation/times
-grep -f $correlation/times $correlation/dealers > $correlation/correlation
-
+# 4 #
+# Match times of losses with the dealers' schedule
+awk '{print $1, $2}' $losses > $times
+grep -f $times $dealers > $suspectDealer
 # Count players who appear in more than one of the hours the casino had losses
+awk '{print $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15}' $losses | sed s'/,/ /'g | sed s'/  / /'g > $players
+for player in $(head -1 $players); do if [ $(grep $player $players | wc -w) -gt 12 ]; then echo $player >> $suspectPlayer; fi; done
 
-awk '{print $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15}' $correlation/players | sed s'/,/ /'g | sed s'/  / /'g > $correlation/p
-
-array=( $(head -1 $correlation/p) ) 
-
-
-for player in ${array[@]}; do grep $player correlation/p | echo $player $(wc); done
-
-for player in ${array[@]}; do echo $player $player[2]; done
-
-for x in $(head -1 $correlation/p | wc -w); do echo ${array[x]}; done
-until [ $i -eq  $(head -1 $correlation/p | wc -w) ]; do ((i-i+1)) &&  echo ${array[$i]}; done
-
-for x in {1..12}; do grep  ${array[$i]} $correlation/p; done
-
-
-
-
-
-
-
-
-
-# 3
-# Isolate and analyse data in Player_Analysis folder (TIMES-PAYERS-COUNT) send output to Notes_Player_Analysis
-# Execute in Player_Analysis folder
-grep - * $playerAnalysis > Roulette_Losses
-awk '{print $1,$2}'  Roulette_Losses > $playerAnalysis/Notes_Player_Analysis
-grep Mylie Roulette_Losses | wc -l >> $playerAnalysis/Notes_Player_Analysis
-
-# 4
-# Separate the data in the Notes_Player_Analysis (TIMES-OF-LOSSESS) by days. Save and name by date in different files in new folder SupportFiles 
-# Execute in any folder
-# Create new folder
-mkdir $correlation/supportFiles
-# For day 0310
-awk '{print $1,$2}' FS='_win_loss_player_data:' $playerAnalysis/Notes_Player_Analysis | sed '$d' | sed '$d'| grep 0310 | awk '{print $2,$3}' > $correlation/supportFiles/0310
-# For day 0312
-awk '{print $1,$2}' FS='_win_loss_player_data:' $playerAnalysis/Notes_Player_Analysis | sed '$d' | sed '$d'| grep 0312 | awk '{print $2,$3}' > $correlation/supportFiles/0312
-# For day 0315
-awk '{print $1,$2}' FS='_win_loss_player_data:' $playerAnalysis/Notes_Player_Analysis | sed '$d' | sed '$d'| grep 0315 | awk '{print $2,$3}' > $correlation/supportFiles/0315
-
-# 5
-# Compare the times with dealers. Save output in Dealers_working_during_losses file
-# Excecute in Dealer_Analysis folder
-grep -f $correlation/supportFiles/0310 0310_Dealer_schedule | awk '{print $1,$2,$5,$6}' > $dealerAnalysis/Dealers_working_during_losses
-grep -f $correlation/supportFiles/0312 0312_Dealer_schedule | awk '{print $1,$2,$5,$6}' >> $dealerAnalysis/Dealers_working_during_losses
-grep -f $correlation/supportFiles/0315 0315_Dealer_schedule | awk '{print $1,$2,$5,$6}' >> $dealerAnalysis/Dealers_working_during_losses
-
-# 6
-# Record dealer and times in Notes_Dealer_Analysis
-# Excecute in Dealer_Analysis folder
-echo Billy Jones >> Notes_Dealer_Analysis
-cat  Dealers_working_during_losses | wc -l >> Notes_Dealer_Analysis
+# 5 #
+# Conclusions
+echo -e '\nDealers working during the hours of losses\nDate:time              Name' | tee -a $conclusion
+cat $suspectDealer | tee -a $conclusion
+echo -e '\n\nPlayers at the Roulette during losses' | tee -a $conclusion
+grep -f $suspectPlayer $losses | tee -a $conclusion
+echo -e '\nName        # Hours / total hours' | tee -a $conclusion
+echo -e $(cat $suspectPlayer): '   ' $(grep -f $suspectPlayer $losses | wc -l) '/' $lossesHours | tee -a $conclusion
+echo -e '\nTHE EVIDENCE POINTS TO:' | tee -a $conclusion
+suspectarray=( $(head -1 $players) ); echo -e "Dealer: $(cat $suspectDealer | head -1 | awk '{print $3, $4}')\nPlayer: ${suspectarray[4]} ${suspectarray[5]}" | tee -a $conclusion
+echo '\ncheck the conclusion file at' $conclusion
