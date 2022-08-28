@@ -15,14 +15,20 @@ suspectPlayer=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dea
 conclusion=~/Lucky_Duck_Investigations/Roulette_Loss_Investigation/Player_Dealer_Correlation/conclusion
 
 # 1 #
-# File Structure
-if [ ! -d $HOME/Lucky_Duck_Investigations/ ];
+# If directory exists, deleted
+if [ -d $HOME/Lucky_Duck_Investigations/ ];
 then
-    mkdir $root $roulette $dealerAnalysis $playerAnalysis $pdCorrelation
-    touch $losses $players $dealers $times $suspectDealer $suspectPlayer
-    cd $root
-    wget "https://tinyurl.com/3-HW-setup-evidence" && chmod +x ./3-HW-setup-evidence && ./3-HW-setup-evidence && rm 3-HW-setup-evidence 
+    rm -r $HOME/Lucky_Duck_Investigations/
 fi
+# Create File Structure
+mkdir $root $roulette $dealerAnalysis $playerAnalysis $pdCorrelation
+touch $losses $players $dealers $times $suspectDealer $suspectPlayer
+cd $root    
+wget https://github.com/andresmadeddie/Linux-/raw/main/Resources/Dealer_Schedules_0310.zip
+wget https://github.com/andresmadeddie/Linux-/raw/main/Resources/Roulette_Player_WinLoss_0310.zip
+unzip Dealer_Schedules_0310.zip
+unzip Roulette_Player_WinLoss_0310.zip
+rm Dealer_Schedules_0310.zip Roulette_Player_WinLoss_0310.zip
 
 # 2 #
 # Move dealers files (days 10, 12, 15) from the given folder to 'Dealer_Analysis folder'
@@ -47,12 +53,14 @@ for player in $(head -1 $players); do if [ $(grep $player $players | wc -w) -gt 
 
 # 5 #
 # Conclusions
+echo -e '\n\n     CONCLUSIONS \n' | tee -a $conclusion
 echo -e '\nDealers working during the hours of losses\nDate:time              Name' | tee -a $conclusion
 cat $suspectDealer | tee -a $conclusion
 echo -e '\n\nPlayers at the Roulette during losses' | tee -a $conclusion
 grep -f $suspectPlayer $losses | tee -a $conclusion
-echo -e '\nName        # Hours / total hours' | tee -a $conclusion
-echo -e $(cat $suspectPlayer): '   ' $(grep -f $suspectPlayer $losses | wc -l) '/' $lossesHours | tee -a $conclusion
+echo -e '\n    Recurrent Players:'
+echo -e 'Name              # Hours / total hours' | tee -a $conclusion
+echo -e $(cat $suspectPlayer): '     ' $(grep -f $suspectPlayer $losses | wc -l) '/' $lossesHours | tee -a $conclusion
 echo -e '\nTHE EVIDENCE POINTS TO:' | tee -a $conclusion
-suspectarray=( $(head -1 $players) ); echo -e "Dealer: $(cat $suspectDealer | head -1 | awk '{print $3, $4}')\nPlayer: ${suspectarray[4]} ${suspectarray[5]}" | tee -a $conclusion
-echo '\ncheck the conclusion file at' $conclusion
+suspectarray=( $(head -1 $players) ); echo -e "    Dealer: $(cat $suspectDealer | head -1 | awk '{print $3, $4}')\n    Player: ${suspectarray[4]} ${suspectarray[5]}" | tee -a $conclusion
+echo -e '\ncheck the conclusion file at' $conclusion '\n'
