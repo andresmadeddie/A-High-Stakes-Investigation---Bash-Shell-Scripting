@@ -47,12 +47,12 @@ lossesHours=$(grep - $playerAnalysis/* | wc -l)
 # Match times of losses with the dealers' schedule
 awk '{print $1, $2}' $losses > $times
 grep -f $times $dealers > $suspectDealer
-# Count players who appear in more than one of the hours the casino had losses
+# Count players who appear in more than once of the hours the casino had losses
 awk '{print $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15}' $losses | sed s'/,/ /'g | sed s'/  / /'g > $players
 for player in $(head -1 $players); do if [ $(grep $player $players | wc -w) -gt 12 ]; then echo $player >> $suspectPlayer; fi; done
 
 # 5 #
-# Conclusions
+# Display the conclusions and store it in a file
 echo -e '\n\n     CONCLUSIONS \n' | tee -a $conclusion
 echo -e '\nDealers working during the hours of losses\nDate:time              Name' | tee -a $conclusion
 cat $suspectDealer | tee -a $conclusion
