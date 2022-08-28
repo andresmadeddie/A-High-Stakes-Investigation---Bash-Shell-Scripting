@@ -19,7 +19,7 @@ After the impressive results of the above investigation, you are tasked with cre
 
 There are two scenarios:
 - Casino losses investigation recreation: The first investigation.
-- Dealer Finder interactive script: After the investigation task to create a script to use in future.
+- Dealer Finder interactive script: After the investigation task to create a script to use in case of future losses.
 
 ## Tools
 
