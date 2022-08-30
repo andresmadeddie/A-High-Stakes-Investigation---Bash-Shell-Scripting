@@ -9,7 +9,7 @@ Project: [Dealer Finder interactive script](/Dealer%20Finder%20interactive%20scr
 
 This project explores data manipulation using the bash shell. It consists of two Bash Shell scripts that are used to reveal relevant information about casino operations. In the '**Casino Loss Investigation Recreation**', the bash shell script '**A High Stakes Investigation**' recreates the processes of navigating, modifying, correlating, and analyzing raw data to gather and prepare evidence to solve a case. Likewise, the '**Dealer Finder interactive script**' is an interactive bash shell script that determines which employee was working at a specific time.
 
-![1]()
+![1](Images/Portada.png)
 
 ## The Narrative behind the project
 
