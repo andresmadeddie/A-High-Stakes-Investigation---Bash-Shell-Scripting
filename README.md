@@ -30,6 +30,7 @@ There are two scenarios:
 | tee | cat | head | arrays |
 | wc | nano | touch | mkdir |
 | Built-In variables | Command Expansions | Brace Expansions | read |
+| Regex | 
 
 
 
