@@ -1,5 +1,5 @@
 # Bash Shell Cheat Sheet
-`python -m http://0.0.0.0:8080
+`python -m http://0.0.0.0:8080`
 
  SQL injection samples
 ```
