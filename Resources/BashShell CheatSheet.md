@@ -11,7 +11,7 @@ CREATE INDEX person_index ON starts (person_id);
 | --- | --- |
 | OS AND HARDWARE | `uname -a` |
 | CURRENT USER LOGIN INFO | `who -a` |
-| MACHINE TYPE INFO | `$MATCHTYPE` |
+| MACHINE TYPE INFO | `$MACHTYPE` |
 | DNS | `cat /etc/resolv.conf` |
 | PROCESSES | `ps aux --sort -%mem \| awk {'print $1, $2, $3, $4, $11'}` |
 | DATE | `date` |
